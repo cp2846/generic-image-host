@@ -11,10 +11,10 @@
 	<script type = "text/javascript">
 		function emptyCheck(){
 			if(document.forms["upload"]["toUpload"].value == "" || document.forms["upload"]["toUpload"].value == null) {
-			alert("No file selected.");
-			return false;
+				alert("No file selected.");
+				return false;
 			}
-		return true;
+			return true;
 		}
 	</script>
 			
