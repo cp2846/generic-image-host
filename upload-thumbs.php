@@ -8,12 +8,13 @@
 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && count($_POST) < 1 ) {
-echo "ERROR: No files selected";
+	echo "ERROR: No files selected";
 }
 
 include("includes/db_connect.php");
 $toDatabase = "";
 session_start();
+
 if (isset($_SESSION["id"])){ //checks if user is logged in. If so, the image information gets sent to the database.
 	$userID = $_SESSION["id"];
 	$toDatabase = 1;
@@ -38,6 +39,7 @@ if (isset($_POST["submit"])){
 	//rudimentary validation
 
 	$check = getimagesize($info);
+	
 	if($check == false){
 		echo "File is not an image.<br>";
 		$uploadOk = 0;
@@ -55,6 +57,7 @@ if (isset($_POST["submit"])){
 	} else {
 		$uploadOk = 1;
 	}
+	
 	if($uploadOk === 1){
 		//copy file to img directory
 		copy($info, $newName);
@@ -76,15 +79,16 @@ if (isset($_POST["submit"])){
 				$thumb = imagecreatefrompng($info);
 				break;
 		}
-			list($width, $height) = getimagesize($info);
-			$thumbWidth = 200;
-			$thumbHeight = 200;
-			$thumbnail = imagecreatetruecolor($thumbWidth,$thumbHeight);
-			imagealphablending($thumbnail, false);
-			imagecopyresized($thumbnail, $thumb, 0, 0, 0, 0, $thumbWidth, $thumbHeight, $width, $height);
-			imagepng($thumbnail, $thumbName);
 		
-		if($toDatabase == 1){
+		list($width, $height) = getimagesize($info);
+		$thumbWidth = 200;
+		$thumbHeight = 200;
+		$thumbnail = imagecreatetruecolor($thumbWidth,$thumbHeight);
+		imagealphablending($thumbnail, false);
+		imagecopyresized($thumbnail, $thumb, 0, 0, 0, 0, $thumbWidth, $thumbHeight, $width, $height);
+		imagepng($thumbnail, $thumbName);
+		
+		if($toDatabase === 1){
 			$insertQuery = "INSERT INTO images(imageid, userid, imagename, thumbname) VALUES('$imgNumber', '$userID', '$newName','$thumbName')";
 			mysqli_query($dbConnect, $insertQuery);
 			header("Location: user.php?image=$imgNumber");
